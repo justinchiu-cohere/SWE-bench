@@ -531,6 +531,7 @@ def main(
     open_file_limit: int,
     run_id: str,
     timeout: int,
+    exclude_completed: bool,
 ):
     """
     Run evaluation harness for the given dataset and predictions.
@@ -557,7 +558,8 @@ def main(
 
     # get dataset from predictions
     dataset = get_dataset_from_preds(
-        dataset_name, split, instance_ids, predictions, run_id
+        dataset_name, split, instance_ids, predictions, run_id,
+        exclude_completed=exclude_completed,
     )
     full_dataset = load_swebench_dataset(dataset_name, split)
     existing_images = list_images(client)
@@ -638,6 +640,9 @@ if __name__ == "__main__":
     # if clean is false, we only remove images above the cache level if they don't already exist
     parser.add_argument(
         "--clean", type=str2bool, default=False, help="Clean images above cache level"
+    )
+    parser.add_argument(
+        "--exclude_completed", type=str2bool, default=True, help="Do not rerun instances that completed, either successfully or in error."
     )
     parser.add_argument(
         "--run_id", type=str, required=True, help="Run ID - identifies the run"
