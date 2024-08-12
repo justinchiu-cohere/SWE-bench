@@ -313,8 +313,8 @@ def build_env_images(
                     traceback.print_exc()
                     failed.append(futures[future])
                     continue
-                except Exception as e:
-                    print(f"Error building image")
+                except Exception:
+                    print("Error building image")
                     traceback.print_exc()
                     failed.append(futures[future])
                     continue
@@ -394,8 +394,8 @@ def build_instance_images(
                     traceback.print_exc()
                     failed.append(futures[future])
                     continue
-                except Exception as e:
-                    print(f"Error building image")
+                except Exception:
+                    print("Error building image")
                     traceback.print_exc()
                     failed.append(futures[future])
                     continue

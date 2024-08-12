@@ -280,7 +280,7 @@ def clean_images(
     """
     images = list_images(client)
     removed = 0
-    print(f"Cleaning cached images...")
+    print("Cleaning cached images...")
     for image_name in images:
         if should_remove(image_name, cache_level, clean, prior_images):
             try:

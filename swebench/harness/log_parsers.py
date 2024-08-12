@@ -1,5 +1,4 @@
 import re
-from enum import Enum
 from swebench.harness.constants import TestStatus
 
 
