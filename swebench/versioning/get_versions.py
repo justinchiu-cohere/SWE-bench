@@ -34,16 +34,16 @@ def _find_version_in_text(text: str, instance: dict) -> str:
     """
     # Remove comments
     pattern = r'""".*?"""'
-    text = re.sub(pattern, '', text, flags=re.DOTALL)
+    text = re.sub(pattern, "", text, flags=re.DOTALL)
     # Search through all patterns
     for pattern in MAP_REPO_TO_VERSION_PATTERNS[instance["repo"]]:
         matches = re.search(pattern, text)
         if matches is not None:
-            print(instance['repo'])
-            if instance['repo'] == 'pyvista/pyvista':
+            print(instance["repo"])
+            if instance["repo"] == "pyvista/pyvista":
                 text = matches.group(0)
-                text = text.split('=')[-1].strip() if '=' in text else text.strip()
-                text = '.'.join(text.split(','))
+                text = text.split("=")[-1].strip() if "=" in text else text.strip()
+                text = ".".join(text.split(","))
                 return text
             return str(matches.group(1)).replace(" ", "")
 
@@ -236,7 +236,9 @@ def merge_results(instances_path: str, repo_prefix: str, output_dir: str = None)
         instances_path_new = os.path.join(output_dir, instances_path_new)
     with open(f"{instances_path_new}", "w") as f:
         json.dump(merged, fp=f)
-    logger.info(f"Saved merged results to {instances_path_new} ({len(merged)} instances)")
+    logger.info(
+        f"Saved merged results to {instances_path_new} ({len(merged)} instances)"
+    )
     return len(merged)
 
 
@@ -355,7 +357,8 @@ def main(args):
     if args.retrieval_method == "mix":
         assert (
             len(data_tasks)
-            == merge_results(args.instances_path, repo_prefix, args.output_dir) + total_web
+            == merge_results(args.instances_path, repo_prefix, args.output_dir)
+            + total_web
         )
     elif args.retrieval_method == "build":
         assert len(data_tasks) == merge_results(
@@ -381,13 +384,37 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--instances_path", required=True, type=str, default=None, help="Path to task instances")
-    parser.add_argument("--retrieval_method", required=True, choices=["build", "mix", "github"], default="github", help="Method to retrieve versions")
-    parser.add_argument("--cleanup", action="store_true", help="Remove testbed repo and conda environments")
-    parser.add_argument("--conda_env", type=str, default=None, help="Conda environment to use")
+    parser.add_argument(
+        "--instances_path",
+        required=True,
+        type=str,
+        default=None,
+        help="Path to task instances",
+    )
+    parser.add_argument(
+        "--retrieval_method",
+        required=True,
+        choices=["build", "mix", "github"],
+        default="github",
+        help="Method to retrieve versions",
+    )
+    parser.add_argument(
+        "--cleanup",
+        action="store_true",
+        help="Remove testbed repo and conda environments",
+    )
+    parser.add_argument(
+        "--conda_env", type=str, default=None, help="Conda environment to use"
+    )
     parser.add_argument("--path_conda", type=str, default=None, help="Path to conda")
-    parser.add_argument("--num_workers", type=int, default=1, help="Number of threads to use")
-    parser.add_argument("--output_dir", type=str, default=None, help="Path to save results")
-    parser.add_argument("--testbed", type=str, default=None, help="Path to testbed repo")
+    parser.add_argument(
+        "--num_workers", type=int, default=1, help="Number of threads to use"
+    )
+    parser.add_argument(
+        "--output_dir", type=str, default=None, help="Path to save results"
+    )
+    parser.add_argument(
+        "--testbed", type=str, default=None, help="Path to testbed repo"
+    )
     args = parser.parse_args()
     main(args)

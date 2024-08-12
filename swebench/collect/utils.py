@@ -34,7 +34,7 @@ class Repo:
         self.api = GhApi(token=token)
         self.repo = self.call_api(self.api.repos.get, owner=owner, repo=name)
 
-    def call_api(self, func: Callable, **kwargs) -> dict|None:
+    def call_api(self, func: Callable, **kwargs) -> dict | None:
         """
         API call wrapper with rate limit handling (checks every 5 minutes if rate limit is reset)
 
@@ -116,7 +116,7 @@ class Repo:
     ) -> Iterator:
         """
         Return all values from a paginated API endpoint.
-        
+
         Args:
             func (callable): API function to call
             per_page (int): number of values to return per page
@@ -320,11 +320,10 @@ def extract_patches(pull: dict, repo: Repo) -> tuple[str, str]:
     """
     patch = requests.get(pull["diff_url"]).text
     patch_test = ""
-    patch_fix  = ""
+    patch_fix = ""
     for hunk in PatchSet(patch):
         if any(
-            test_word in hunk.path for test_word in
-            ['test', 'tests', 'e2e', 'testing']
+            test_word in hunk.path for test_word in ["test", "tests", "e2e", "testing"]
         ):
             patch_test += str(hunk)
         else:
@@ -393,7 +392,9 @@ def extract_problem_statement_and_hints_django(
             if "/" in timestamp:
                 timestamp = time.mktime(time.strptime(timestamp, "%m/%d/%y %H:%M:%S"))
             elif "," in timestamp:
-                timestamp = time.mktime(time.strptime(timestamp, "%b %d, %Y, %I:%M:%S %p"))
+                timestamp = time.mktime(
+                    time.strptime(timestamp, "%b %d, %Y, %I:%M:%S %p")
+                )
             else:
                 raise ValueError(f"Timestamp format not recognized: {timestamp}")
 

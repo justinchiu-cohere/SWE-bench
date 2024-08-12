@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""This python script is designed to run inference on a dataset using either the OpenAI or Anthropic API, depending on the model specified. 
+"""This python script is designed to run inference on a dataset using either the OpenAI or Anthropic API, depending on the model specified.
 It sorts instances by length and continually writes the outputs to a specified file, so that the script can be stopped and restarted without losing progress.
 """
 
@@ -277,7 +277,7 @@ def call_anthropic(
         traceback.print_exc()
         time.sleep(20)
         return None
-    
+
 
 @retry(wait=wait_random_exponential(min=60, max=600), stop=stop_after_attempt(6))
 def call_anthropic_v2(
@@ -360,7 +360,7 @@ def anthropic_inference(
     }
     total_cost = 0
     print(f"Filtered to {len(test_dataset)} instances")
-    if 'claude-3' in model_name_or_path.lower():
+    if "claude-3" in model_name_or_path.lower():
         call_api = call_anthropic_v2
     else:
         call_api = call_anthropic
@@ -371,12 +371,12 @@ def anthropic_inference(
                 continue
             output_dict = {"instance_id": instance_id}
             output_dict.update(basic_args)
-            if 'claude-3' in model_name_or_path.lower():
+            if "claude-3" in model_name_or_path.lower():
                 output_dict["text_inputs"] = f"{datum['text']}\n"
             else:
-                output_dict[
-                    "text_inputs"
-                ] = f"{HUMAN_PROMPT} {datum['text']}\n\n{AI_PROMPT}"
+                output_dict["text_inputs"] = (
+                    f"{HUMAN_PROMPT} {datum['text']}\n\n{AI_PROMPT}"
+                )
             try:
                 completion, cost = call_api(
                     output_dict["text_inputs"],

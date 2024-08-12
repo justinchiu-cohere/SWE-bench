@@ -21,7 +21,9 @@ from swebench.harness.constants import (
 load_dotenv()
 
 
-def load_swebench_dataset(name="princeton-nlp/SWE-bench", split="test") -> list[SWEbenchInstance]:
+def load_swebench_dataset(
+    name="princeton-nlp/SWE-bench", split="test"
+) -> list[SWEbenchInstance]:
     """
     Load SWE-bench dataset from Hugging Face Datasets or local .json/.jsonl file
     """
@@ -35,7 +37,13 @@ def load_swebench_dataset(name="princeton-nlp/SWE-bench", split="test") -> list[
     # Load from Hugging Face Datasets
     if name.lower() in {"swe-bench", "swebench", "swe_bench"}:
         name = "princeton-nlp/SWE-bench"
-    elif name.lower() in {"swe-bench-lite", "swebench-lite", "swe_bench_lite", "swe-bench_lite", "lite"}:
+    elif name.lower() in {
+        "swe-bench-lite",
+        "swebench-lite",
+        "swe_bench_lite",
+        "swe-bench_lite",
+        "lite",
+    }:
         name = "princeton-nlp/SWE-bench_Lite"
     dataset = cast(Dataset, load_dataset(name, split=split))
     return [cast(SWEbenchInstance, instance) for instance in dataset]

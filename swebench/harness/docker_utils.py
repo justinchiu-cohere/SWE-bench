@@ -172,7 +172,7 @@ def cleanup_container(client, container, logger):
         )
 
 
-def exec_run_with_timeout(container, cmd, timeout: int|None=60):
+def exec_run_with_timeout(container, cmd, timeout: int | None = 60):
     """
     Run a command in a container with a timeout.
 
@@ -182,7 +182,7 @@ def exec_run_with_timeout(container, cmd, timeout: int|None=60):
         timeout (int): Timeout in seconds.
     """
     # Local variables to store the result of executing the command
-    exec_result = ''
+    exec_result = ""
     exec_id = None
     exception = None
     timed_out = False
@@ -246,7 +246,7 @@ def find_dependent_images(client: docker.DockerClient, image_name: str):
         # Check if the base image is in this image's history
         history = image.history()
         for layer in history:
-            if layer['Id'] == base_image_id:
+            if layer["Id"] == base_image_id:
                 # If found, add this image to the dependent images list
                 tags = image.tags
                 dependent_images.append(tags[0] if tags else image.id)
@@ -264,11 +264,8 @@ def list_images(client: docker.DockerClient):
 
 
 def clean_images(
-        client: docker.DockerClient,
-        prior_images: set,
-        cache_level: str,
-        clean: bool
-    ):
+    client: docker.DockerClient, prior_images: set, cache_level: str, clean: bool
+):
     """
     Clean Docker images based on cache level and clean flag.
 
@@ -295,12 +292,7 @@ def clean_images(
     print(f"Removed {removed} images.")
 
 
-def should_remove(
-        image_name: str,
-        cache_level: str,
-        clean: bool,
-        prior_images: set
-    ):
+def should_remove(image_name: str, cache_level: str, clean: bool, prior_images: set):
     """
     Determine if an image should be removed based on cache level and clean flag.
     """
