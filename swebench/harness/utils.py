@@ -16,36 +16,43 @@ from swebench.harness.constants import (
     MAP_REPO_TO_REQS_PATHS,
     NON_TEST_EXTS,
     SWE_BENCH_URL_RAW,
+    KEY_INSTANCE_ID,
 )
 
 load_dotenv()
 
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
 def load_swebench_dataset(
-    name="princeton-nlp/SWE-bench", split="test"
+    name="princeton-nlp/SWE-bench", split="test", instance_ids=None,
 ) -> list[SWEbenchInstance]:
     """
     Load SWE-bench dataset from Hugging Face Datasets or local .json/.jsonl file
     """
+    # check that all instance IDs are in the dataset
+    if instance_ids:
+        instance_ids = set(instance_ids)
     # Load from local .json/.jsonl file
     if name.endswith(".json") or name.endswith(".jsonl"):
-        return [
-            cast(SWEbenchInstance, instance)
-            for instance in json.loads(Path(name).read_text())
-        ]
-
-    # Load from Hugging Face Datasets
-    if name.lower() in {"swe-bench", "swebench", "swe_bench"}:
-        name = "princeton-nlp/SWE-bench"
-    elif name.lower() in {
-        "swe-bench-lite",
-        "swebench-lite",
-        "swe_bench_lite",
-        "swe-bench_lite",
-        "lite",
-    }:
-        name = "princeton-nlp/SWE-bench_Lite"
-    dataset = cast(Dataset, load_dataset(name, split=split))
+        dataset = json.loads(Path(name).read_text())
+        dataset_ids = {instance[KEY_INSTANCE_ID] for instance in dataset}
+    else:
+        # Load from Hugging Face Datasets
+        if name.lower() in {"swe-bench", "swebench", "swe_bench"}:
+            name = "princeton-nlp/SWE-bench"
+        elif name.lower() in {"swe-bench-lite", "swebench-lite", "swe_bench_lite", "swe-bench_lite", "lite"}:
+            name = "princeton-nlp/SWE-bench_Lite"
+        dataset = cast(Dataset, load_dataset(name, split=split))
+        dataset_ids = {instance[KEY_INSTANCE_ID] for instance in dataset}
+    if instance_ids:
+        if instance_ids - dataset_ids:
+            raise ValueError(
+                (
+                    "Some instance IDs not found in dataset!"
+                    f"\nMissing IDs:\n{' '.join(instance_ids - dataset_ids)}"
+                )
+            )
+        dataset = [instance for instance in dataset if instance[KEY_INSTANCE_ID] in instance_ids]
     return [cast(SWEbenchInstance, instance) for instance in dataset]
 
 
@@ -171,7 +178,7 @@ def has_attribute_or_import_error(log_before):
 def get_environment_yml_by_commit(repo: str, commit: str, env_name: str) -> str:
     for req_path in MAP_REPO_TO_ENV_YML_PATHS[repo]:
         reqs_url = os.path.join(SWE_BENCH_URL_RAW, repo, commit, req_path)
-        reqs = requests.get(reqs_url)
+        reqs = requests.get(reqs_url, headers=HEADERS)
         if reqs.status_code == 200:
             break
     else:
@@ -216,7 +223,7 @@ def get_environment_yml(instance: SWEbenchInstance, env_name: str) -> str:
 def get_requirements_by_commit(repo: str, commit: str) -> str:
     for req_path in MAP_REPO_TO_REQS_PATHS[repo]:
         reqs_url = os.path.join(SWE_BENCH_URL_RAW, repo, commit, req_path)
-        reqs = requests.get(reqs_url)
+        reqs = requests.get(reqs_url, headers=HEADERS)
         if reqs.status_code == 200:
             break
     else:
@@ -243,7 +250,7 @@ def get_requirements_by_commit(repo: str, commit: str) -> str:
                 req_dir,
                 file_name,
             )
-            reqs = requests.get(reqs_url)
+            reqs = requests.get(reqs_url, headers=HEADERS)
             if reqs.status_code == 200:
                 for line_extra in reqs.text.split("\n"):
                     if not exclude_line(line_extra):
