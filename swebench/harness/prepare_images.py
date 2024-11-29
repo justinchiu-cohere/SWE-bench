@@ -11,8 +11,16 @@ from swebench.harness.utils import load_swebench_dataset, str2bool
 
 
 def filter_dataset_to_build(
+<<<<<<< HEAD
     dataset: list, instance_ids: list, client: docker.DockerClient, force_rebuild: bool
 ):
+=======
+        dataset: list,
+        instance_ids: list | None,
+        client: docker.DockerClient,
+        force_rebuild: bool
+    ):
+>>>>>>> 7501f0993193a1e2f3c12e3311ef906ae1d80783
     """
     Filter the dataset to only include instances that need to be built.
 
@@ -25,6 +33,9 @@ def filter_dataset_to_build(
     # Get existing images
     existing_images = list_images(client)
     data_to_build = []
+    
+    if instance_ids is None:
+        instance_ids = [instance[KEY_INSTANCE_ID] for instance in dataset]
 
     # Check if all instance IDs are in the dataset
     not_in_dataset = set(instance_ids).difference(
