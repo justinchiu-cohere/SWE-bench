@@ -156,13 +156,7 @@ def run_instance(
 
         # Get git diff before running eval script
         git_diff_output_before = (
-<<<<<<< HEAD
-            container.exec_run("git diff", workdir="/testbed")
-            .output.decode("utf-8")
-            .strip()
-=======
             container.exec_run("git diff", workdir=DOCKER_WORKDIR).output.decode(UTF8).strip()
->>>>>>> 7501f0993193a1e2f3c12e3311ef906ae1d80783
         )
         logger.info(f"Git diff before:\n{git_diff_output_before}")
 
@@ -174,17 +168,9 @@ def run_instance(
         copy_to_container(container, eval_file, Path("/eval.sh"))
 
         # Run eval script, write output to logs
-<<<<<<< HEAD
-        test_output, timed_out, total_runtime = exec_run_with_timeout(
-            container, "/bin/bash /eval.sh", timeout
-        )
-        test_output_path = log_dir / "test_output.txt"
-        logger.info(f"Test runtime: {total_runtime:_.2f} seconds")
-=======
         test_output, timed_out, total_runtime = exec_run_with_timeout(container, "/bin/bash /eval.sh", timeout)
         test_output_path = log_dir / LOG_TEST_OUTPUT
         logger.info(f'Test runtime: {total_runtime:_.2f} seconds')
->>>>>>> 7501f0993193a1e2f3c12e3311ef906ae1d80783
         with open(test_output_path, "w") as f:
             f.write(test_output)
             logger.info(f"Test output for {instance_id} written to {test_output_path}")
@@ -198,13 +184,7 @@ def run_instance(
 
         # Get git diff after running eval script
         git_diff_output_after = (
-<<<<<<< HEAD
-            container.exec_run("git diff", workdir="/testbed")
-            .output.decode("utf-8")
-            .strip()
-=======
             container.exec_run("git diff", workdir=DOCKER_WORKDIR).output.decode(UTF8).strip()
->>>>>>> 7501f0993193a1e2f3c12e3311ef906ae1d80783
         )
 
         # Check if git diff changed after running eval script
@@ -386,15 +366,7 @@ def get_dataset_from_preds(
         print(f"{len(completed_ids)} instances already run, skipping...")
         dataset = [i for i in dataset if i[KEY_INSTANCE_ID] not in completed_ids]
 
-<<<<<<< HEAD
-    empty_patch_ids = {
-        k
-        for k, v in predictions.items()
-        if v["model_patch"] == "" or v["model_patch"] is None
-    }
-=======
     empty_patch_ids = {k for k, v in predictions.items() if v[KEY_PREDICTION] == "" or v[KEY_PREDICTION] is None}
->>>>>>> 7501f0993193a1e2f3c12e3311ef906ae1d80783
 
     # filter dataset to only instances with predictions
     dataset = [
@@ -529,16 +501,9 @@ def get_gold_predictions(dataset_name: str, split: str):
     return [
         {
             KEY_INSTANCE_ID: datum[KEY_INSTANCE_ID],
-<<<<<<< HEAD
-            "model_patch": datum["patch"],
-            "model_name_or_path": "gold",
-        }
-        for datum in dataset
-=======
             KEY_PREDICTION: datum["patch"],
             KEY_MODEL: "gold",
         } for datum in dataset
->>>>>>> 7501f0993193a1e2f3c12e3311ef906ae1d80783
     ]
 
 

@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 from ghapi.core import GhApi
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 
 gh_token = os.environ.get("GITHUB_TOKEN")
@@ -100,7 +102,26 @@ if __name__ == "__main__":
 
     # Start selenium driver to get top 5000 pypi page
     url_top_pypi = "https://hugovk.github.io/top-pypi-packages/"
-    driver = webdriver.Chrome()
+
+    #driver = webdriver.Chrome()
+    # Configure Chrome options
+    chrome_options = Options()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--headless')  # Remove if you need a GUI
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--window-size=1920,1080')
+
+    # Optional: Specify Chrome binary location if necessary
+    # chrome_options.binary_location = '/path/to/chrome'
+
+    # Initialize ChromeDriver service
+    #service = Service('/home/justinchiu_cohere_com/.cache/selenium/chrome/linux64/131.0.6778.85/chromedriver')
+
+    # Initialize WebDriver
+    #driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
+
     driver.get(url_top_pypi)
     button = driver.find_element(By.CSS_SELECTOR, 'button[ng-click="show(8000)"]')
     button.click()
