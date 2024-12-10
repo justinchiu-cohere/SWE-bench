@@ -40,6 +40,9 @@ setuptools.setup(
         'rich',
         'unidiff',
         'tqdm',
+        "fastapi",
+        "uvicorn",
+        "aider-chat",
     ],
     extras_require={
         'inference': [
