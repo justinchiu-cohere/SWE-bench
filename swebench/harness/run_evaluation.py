@@ -44,7 +44,8 @@ from swebench.harness.docker_build import (
 )
 from swebench.harness.grading import get_eval_report
 from swebench.harness.test_spec import make_test_spec, TestSpec
-from swebench.harness.utils import load_swebench_dataset, str2bool
+from swebench.harness.utils import load_swebench_dataset, str2bool, EvaluationError
+from swebench.harness.run_evaluation_modal import run_instances_modal
 
 
 class EvaluationError(Exception):
@@ -506,6 +507,19 @@ def get_gold_predictions(dataset_name: str, split: str):
         } for datum in dataset
     ]
 
+def get_predictions_from_file(predictions_path: str, dataset_name: str, split: str):
+    if predictions_path == "gold":
+        print("Using gold predictions - ignoring predictions_path")
+        return get_gold_predictions(dataset_name, split)
+    if predictions_path.endswith(".json"):
+        with open(predictions_path, "r") as f:
+            return json.load(f)
+    elif predictions_path.endswith(".jsonl"):
+        with open(predictions_path, "r") as f:
+            return [json.loads(line) for line in f]
+    else:
+        raise ValueError("Predictions path must be .json or .jsonl")
+
 
 def main(
     dataset_name: str,
@@ -520,6 +534,7 @@ def main(
     run_id: str,
     timeout: int,
     exclude_completed: bool,
+    modal: bool,
 ):
     """
     Run evaluation harness for the given dataset and predictions.
@@ -530,23 +545,26 @@ def main(
     client = docker.from_env()
 
     # load predictions as map of instance_id to prediction
-    if predictions_path == "gold":
-        print("Using gold predictions - ignoring predictions_path")
-        predictions = get_gold_predictions(dataset_name, split)
-    else:
-        if predictions_path.endswith(".json"):
-            with open(predictions_path, "r") as f:
-                predictions = json.load(f)
-        elif predictions_path.endswith(".jsonl"):
-            with open(predictions_path, "r") as f:
-                predictions = [json.loads(line) for line in f]
-        else:
-            raise ValueError('Predictions path must be "gold", .json, or .jsonl')
+    predictions = get_predictions_from_file(predictions_path, dataset_name, split)
     predictions = {pred[KEY_INSTANCE_ID]: pred for pred in predictions}
 
     # get dataset from predictions
     dataset = get_dataset_from_preds(dataset_name, split, instance_ids, predictions, run_id)
     full_dataset = load_swebench_dataset(dataset_name, split, instance_ids)
+
+    if modal:
+        # run instances on Modal
+        if not dataset:
+            print("No instances to run.")
+        else:
+            run_instances_modal(predictions, dataset, full_dataset, run_id, timeout)
+        return
+        # probably need to clean up the above...?
+
+    # run instances locally
+    resource.setrlimit(resource.RLIMIT_NOFILE, (open_file_limit, open_file_limit))
+    client = docker.from_env()
+
     existing_images = list_images(client)
     print(f"Running {len(dataset)} unevaluated instances...")
     if not dataset:
@@ -632,6 +650,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--run_id", type=str, required=True, help="Run ID - identifies the run"
     )
+    parser.add_argument("--modal", action="store_true", default=False, help="Run on Modal")
+
     args = parser.parse_args()
 
     main(**vars(args))
