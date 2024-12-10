@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# remove microsoft/debugpy
 repos=(
     'boto/boto3'
     'boto/botocore'
@@ -130,7 +131,6 @@ repos=(
     'openai/openai-python'
     'davidhalter/parso'
     'zeromq/pyzmq'
-    'microsoft/debugpy'
     'kubernetes-client/python'
     'python-websockets/websockets'
     'fastapi/typer'
