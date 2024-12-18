@@ -103,17 +103,67 @@ def apply_diff_and_get_patch(repo, base_commit, instance_id, diff, repo_cache_pa
     return output
 
 
-if __name__ == "__main__":
-    pq_suffix = "-data-15d-post-training-justinchiu_cohere_com-code-SftC37bCode-7B_20241217_055657_clean_expression-ckpt-552-32-10.parquet"
-    pq_path = f"gs://cohere-dev/justinchiu/swebench_lite_generations/{pq_suffix}"
+def extract_model_name(filepath: str) -> str:
+    """Extract model name from GCS filepath."""
+    parts = filepath.split('/')[-1].split('-')
+    if 'SftC37b' in filepath:
+        # Handle SftC37b model variants
+        model_type = next(p for p in parts if 'SftC37b' in p)
+        return f"SftC37b-{model_type.split('SftC37b')[1]}"
+    elif 'Blobheart' in filepath:
+        return 'Blobheart'
+    elif 'OpenAIAPI' in filepath:
+        return 'GPT-4'
+    elif 'command-22.1.1' in filepath:
+        return 'command-22.1.1'
+    return 'unknown'
 
+def process_parquet_file(pq_path: str, output_dir: Path):
+    """Process a single parquet file and save results as JSONL."""
+    print(f"Processing {pq_path}")
+    model_name = extract_model_name(pq_path)
+    output_path = output_dir / f"{model_name}.jsonl"
+    
     df = pd.read_parquet(pq_path)
+    results = []
+    
     for idx, row in df.iterrows():
-        unidiff_patch = apply_diff_and_get_patch(
-            repo=row["repo"],
-            base_commit=row["base_commit"],
-            instance_id=row["instance_id"],
-            diff=row["diff"],
-            repo_cache_path=Path(f"/home/justinchiu_cohere_com/format-pr/repo_cache"),
-        )
-        import pdb; pdb.set_trace()
+        try:
+            unidiff_patch = apply_diff_and_get_patch(
+                repo=row["repo"],
+                base_commit=row["base_commit"],
+                instance_id=row["instance_id"],
+                diff=row["diff"],
+                repo_cache_path=Path("/home/justinchiu_cohere_com/format-pr/repo_cache"),
+            )
+            
+            if unidiff_patch:
+                result = {
+                    "model_name_or_path": model_name,
+                    "instance_id": row["instance_id"],
+                    "model_patch": unidiff_patch
+                }
+                results.append(result)
+        except Exception as e:
+            print(f"Error processing row {idx}: {e}")
+    
+    # Write results to JSONL
+    with output_path.open('w') as f:
+        for result in results:
+            f.write(json.dumps(result) + '\n')
+    
+    print(f"Saved {len(results)} results to {output_path}")
+
+if __name__ == "__main__":
+    # List all parquet files in the GCS bucket
+    fs = gcsfs.GCSFileSystem()
+    bucket_path = "gs://cohere-dev/justinchiu/swebench_lite_generations/"
+    parquet_files = [f for f in fs.ls(bucket_path) if f.endswith('.parquet')]
+    
+    # Create output directory
+    output_dir = Path("patches")
+    output_dir.mkdir(exist_ok=True)
+    
+    # Process each parquet file
+    for pq_path in parquet_files:
+        process_parquet_file(pq_path, output_dir)
