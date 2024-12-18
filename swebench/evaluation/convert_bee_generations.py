@@ -160,18 +160,20 @@ def process_parquet_file(pq_path: str, output_dir: Path):
     df = pd.read_parquet(pq_path)
     results = []
     
-    with ThreadPoolExecutor(max_workers=16) as executor:
-        # Submit all rows for processing
-        future_to_row = {
-            executor.submit(process_row, row, model_name): row 
-            for _, row in df.iterrows()
-        }
-        
-        # Collect results as they complete
-        for future in as_completed(future_to_row):
-            result = future.result()
-            if result:
-                results.append(result)
+    # Process in batches of 16
+    batch_size = 16
+    for i in range(0, len(df), batch_size):
+        batch = df.iloc[i:i+batch_size]
+        with ThreadPoolExecutor(max_workers=16) as executor:
+            # Submit batch of rows and collect in order
+            futures = [
+                executor.submit(process_row, row, model_name)
+                for _, row in batch.iterrows()
+            ]
+            for future in futures:
+                result = future.result()
+                if result:
+                    results.append(result)
     
     # Write results to JSONL
     with output_path.open('w') as f:
