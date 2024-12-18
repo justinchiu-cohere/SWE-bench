@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import Dict, List
 from git import Repo
+import shutil
 
 import datasets
 import gcsfs
@@ -61,7 +62,6 @@ def apply_diff(repo_dir, diff):
         diff,
         flags=re.MULTILINE | re.DOTALL,
     )
-    import pdb; pdb.set_trace()
     for filename, search, replace in edits:
         fname = repo_dir / filename
         if not fname.exists():
@@ -102,7 +102,10 @@ def apply_diff_and_get_patch(repo, base_commit, instance_id, diff, repo_cache_pa
 
     apply_diff(repo_path, diff)
     output = subprocess.check_output(f"git diff".split(), cwd=repo_path).decode("utf-8")
-    import pdb; pdb.set_trace()
+
+    # cleanup commit_cache
+    shutil.rmtree(repo_path)
+
     return output
 
 
@@ -162,7 +165,7 @@ if __name__ == "__main__":
     # List all parquet files in the GCS bucket
     fs = gcsfs.GCSFileSystem()
     bucket_path = "gs://cohere-dev/justinchiu/swebench_lite_generations/"
-    parquet_files = [f for f in fs.ls(bucket_path) if f.endswith('.parquet')]
+    parquet_files = [f"gs://{f}" for f in fs.ls(bucket_path) if f.endswith('.parquet')]
     
     # Create output directory
     output_dir = Path("patches")
