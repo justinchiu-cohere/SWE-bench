@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List
 from git import Repo
 import shutil
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import datasets
 import gcsfs
@@ -129,6 +130,27 @@ def extract_model_name(filepath: str) -> str:
         return 'command-22.1.1'
     return 'unknown'
 
+def process_row(row, model_name):
+    """Process a single row and return the result."""
+    try:
+        unidiff_patch = apply_diff_and_get_patch(
+            repo=row["repo"],
+            base_commit=row["base_commit"],
+            instance_id=row["instance_id"],
+            diff=row["diff"],
+            repo_cache_path=Path("/home/justinchiu_cohere_com/format-pr/repo_cache"),
+        )
+        
+        if unidiff_patch:
+            return {
+                "model_name_or_path": model_name,
+                "instance_id": row["instance_id"],
+                "model_patch": unidiff_patch
+            }
+    except Exception as e:
+        print(f"Error processing instance {row['instance_id']}: {e}")
+    return None
+
 def process_parquet_file(pq_path: str, output_dir: Path):
     """Process a single parquet file and save results as JSONL."""
     print(f"Processing {pq_path}")
@@ -138,25 +160,18 @@ def process_parquet_file(pq_path: str, output_dir: Path):
     df = pd.read_parquet(pq_path)
     results = []
     
-    for idx, row in df.iterrows():
-        try:
-            unidiff_patch = apply_diff_and_get_patch(
-                repo=row["repo"],
-                base_commit=row["base_commit"],
-                instance_id=row["instance_id"],
-                diff=row["diff"],
-                repo_cache_path=Path("/home/justinchiu_cohere_com/format-pr/repo_cache"),
-            )
-            
-            if unidiff_patch:
-                result = {
-                    "model_name_or_path": model_name,
-                    "instance_id": row["instance_id"],
-                    "model_patch": unidiff_patch
-                }
+    with ThreadPoolExecutor(max_workers=16) as executor:
+        # Submit all rows for processing
+        future_to_row = {
+            executor.submit(process_row, row, model_name): row 
+            for _, row in df.iterrows()
+        }
+        
+        # Collect results as they complete
+        for future in as_completed(future_to_row):
+            result = future.result()
+            if result:
                 results.append(result)
-        except Exception as e:
-            print(f"Error processing row {idx}: {e}")
     
     # Write results to JSONL
     with output_path.open('w') as f:
