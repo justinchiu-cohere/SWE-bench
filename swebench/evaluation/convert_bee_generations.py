@@ -78,7 +78,6 @@ def apply_diff(repo_dir, diff):
                 f.write(new_content)
         else:
             print("DIFF NOT APPLIED")
-        return new_content is not None
 
 
 def apply_diff_and_get_patch(repo, base_commit, instance_id, diff, repo_cache_path):
