@@ -10,6 +10,9 @@ import datasets
 import gcsfs
 import pandas as pd
 
+from swebench.evaluation.aider_edit import do_replace
+
+
 TOKEN = os.getenv("GITHUB_TOKEN")
 
 def remove_metatext(x):
@@ -153,6 +156,7 @@ def process_parquet_file(pq_path: str, output_dir: Path):
             f.write(json.dumps(result) + '\n')
     
     print(f"Saved {len(results)} results to {output_path}")
+
 
 if __name__ == "__main__":
     # List all parquet files in the GCS bucket
