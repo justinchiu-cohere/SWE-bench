@@ -111,11 +111,16 @@ def apply_diff_and_get_patch(repo, base_commit, instance_id, diff, repo_cache_pa
 
 def extract_model_name(filepath: str) -> str:
     """Extract model name from GCS filepath."""
-    parts = filepath.split('/')[-1].split('-')
     if 'SftC37b' in filepath:
-        # Handle SftC37b model variants
-        model_type = next(p for p in parts if 'SftC37b' in p)
-        return f"SftC37b-{model_type.split('SftC37b')[1]}"
+        # Define the regex pattern to match everything after 'SftC3' but before '.parquet'
+        pattern = r"(SftC3.*)\.parquet"
+
+        # Search for the pattern in the original string
+        match = re.search(pattern, filepath)
+
+        # Extract the matched group if any
+        result = match.group(1) if match else "unknown"
+        return result
     elif 'Blobheart' in filepath:
         return 'Blobheart'
     elif 'OpenAIAPI' in filepath:
