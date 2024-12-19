@@ -122,9 +122,27 @@ def extract_model_name(filepath: str) -> str:
         result = match.group(1) if match else "unknown"
         return result
     elif 'Blobheart' in filepath:
-        return 'Blobheart'
+        pattern = r"(Blobheart.*)\.parquet"
+
+        # Search for the pattern in the original string
+        match = re.search(pattern, filepath)
+
+        # Extract the matched group if any
+        result = match.group(1) if match else "unknown"
+        return result
     elif 'OpenAIAPI' in filepath:
         return 'GPT-4'
+    elif "Mistral" in filepath:
+        pattern = r"(Mistral.*)\.parquet"
+
+        # Search for the pattern in the original string
+        match = re.search(pattern, filepath)
+
+        # Extract the matched group if any
+        result = match.group(1) if match else "unknown"
+        return result
+    elif "llama" in filepath:
+        return "llama"
     elif 'command-22.1.1' in filepath:
         return 'command-22.1.1'
     return 'unknown'
@@ -187,6 +205,11 @@ if __name__ == "__main__":
     fs = gcsfs.GCSFileSystem()
     bucket_path = "gs://cohere-dev/justinchiu/swebench_lite_generations/"
     parquet_files = [f"gs://{f}" for f in fs.ls(bucket_path) if f.endswith('.parquet')]
+    # llama 8b
+    #parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/TogetherAI:meta-llama/"]
+    # swebench 16k ablation
+    #parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/Blobheart:c3-sweep-tp0w9f2d-j7so-fp16-32-10.parquet"]
+    parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/Mistral:ministral-8b-2410-32-10.parquet"]
     
     # Create output directory
     output_dir = Path("patches")
