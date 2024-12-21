@@ -204,16 +204,21 @@ if __name__ == "__main__":
     # List all parquet files in the GCS bucket
     fs = gcsfs.GCSFileSystem()
     bucket_path = "gs://cohere-dev/justinchiu/swebench_lite_generations/"
-    parquet_files = [f"gs://{f}" for f in fs.ls(bucket_path) if f.endswith('.parquet')]
+    #parquet_files = [f"gs://{f}" for f in fs.ls(bucket_path) if f.endswith('.parquet')]
     # llama 8b
     #parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/TogetherAI:meta-llama/"]
     # swebench 16k ablation
     #parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/Blobheart:c3-sweep-tp0w9f2d-j7so-fp16-32-10.parquet"]
     # mistral
-    parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/Mistral:ministral-8b-2410-32-10.parquet"]
+    #parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/Mistral:ministral-8b-2410-32-10.parquet"]
     # c3 7b swebench sweep
-    parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/Blobheart:c3-sweep-8bk66u7l-9za7-fp16-32-10.parquet"]
-    
+    #parquet_files = ["gs://cohere-dev/justinchiu/swebench_lite_generations/Blobheart:c3-sweep-8bk66u7l-9za7-fp16-32-10.parquet"]
+    # Blobheart models    
+    parquet_files = [
+        f"gs://{f}" for f in fs.ls(bucket_path)
+        if f.endswith('.parquet') and "Blobheart" in f
+    ]
+
     # Create output directory
     output_dir = Path("patches")
     output_dir.mkdir(exist_ok=True)
