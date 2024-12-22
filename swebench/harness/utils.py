@@ -1,5 +1,6 @@
 import json
 import os
+import posixpath
 from pathlib import Path
 import re
 import requests
@@ -193,7 +194,7 @@ def has_attribute_or_import_error(log_before):
 @cache
 def get_environment_yml_by_commit(repo: str, commit: str, env_name: str) -> str:
     for req_path in MAP_REPO_TO_ENV_YML_PATHS[repo]:
-        reqs_url = os.path.join(SWE_BENCH_URL_RAW, repo, commit, req_path)
+        reqs_url = posixpath.join(SWE_BENCH_URL_RAW, repo, commit, req_path)
         reqs = requests.get(reqs_url, headers=HEADERS)
         if reqs.status_code == 200:
             break
@@ -238,7 +239,7 @@ def get_environment_yml(instance: SWEbenchInstance, env_name: str) -> str:
 @cache
 def get_requirements_by_commit(repo: str, commit: str) -> str:
     for req_path in MAP_REPO_TO_REQS_PATHS[repo]:
-        reqs_url = os.path.join(SWE_BENCH_URL_RAW, repo, commit, req_path)
+        reqs_url = posixpath.join(SWE_BENCH_URL_RAW, repo, commit, req_path)
         reqs = requests.get(reqs_url, headers=HEADERS)
         if reqs.status_code == 200:
             break

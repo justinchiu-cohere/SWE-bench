@@ -111,6 +111,7 @@ SPECS_FLASK = {
         "packages": "requirements.txt",
         "install": "python -m pip install -e .",
         "pip_packages": [
+            "setuptools==70.0.0",
             "click==8.1.3",
             "itsdangerous==2.1.2",
             "Jinja2==3.1.2",
@@ -127,6 +128,7 @@ SPECS_FLASK.update(
             "packages": "requirements.txt",
             "install": "python -m pip install -e .",
             "pip_packages": [
+                "setuptools==70.0.0",
                 "click==8.1.3",
                 "itsdangerous==2.1.2",
                 "Jinja2==3.1.2",
@@ -499,7 +501,7 @@ for k in ['3.8', '3.9']:
 SPECS_SPHINX = {
     k: {
         "python": "3.9",
-        "pip_packages": ["tox==4.16.0", "tox-current-env==0.0.11"],
+        "pip_packages": ["tox==4.16.0", "tox-current-env==0.0.11", "Jinja2==3.0.3"],
         "install": "python -m pip install -e .[test]",
         "pre_install": ["sed -i 's/pytest/pytest -rA/' tox.ini"],
         "test_cmd": TEST_SPHINX,
@@ -795,6 +797,7 @@ SPECS_PYVISTA.update(
             "install": "python -m pip install -e .",
             "pip_packages": ["pytest"],
             "test_cmd": TEST_PYTEST,
+            "pre_install": ["apt-get update && apt-get install -y ffmpeg libsm6 libxext6 libxrender1"],
         }
         for k in [
             "0.24",
