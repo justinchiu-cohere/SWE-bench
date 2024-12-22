@@ -294,6 +294,10 @@ def build_env_images(
         return [], []
     print(f"Total environment images to build: {len(configs_to_build)}")
 
+    print("Building environments:")
+    for env in configs_to_build.keys():
+        print(env)
+
     # Build the environment images
     successful, failed = list(), list()
     with tqdm(
