@@ -36,6 +36,10 @@ results = {
 }
 
 for path in Path("patches").glob("Blobheart*"):
+    # dont run on non-sweep runs
+    if "sweep" not in path:
+        continue
+
     model_name = path.stem  # Gets filename without extension
     command = command_template.format(model=model_name)
     
