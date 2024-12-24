@@ -16,13 +16,27 @@ swebench_wandb_runs = [
     "4yku4e2z",
     "4jtt1k9l",
     "4lbw861n",
-]
-swebench_scrape_wandb_runs = [
     "zkey7k3u",
     "1tb0s94i",
     "gfh0o04h",
     "zf7cubyt",
     "8bk66u7l",
+]
+
+swebench_scrape_wandb_runs = [
+    "1meyqtnm",
+    "mwbbqv5c",
+    "wsigy7al",
+    "qlgqof20",
+    "bowyk271",
+]
+
+swebench_half_wandb_runs = [
+    "dkg32sen",
+    "p4qou408",
+    "g7m1aajx",
+    "h5d8l7kw",
+    "8o5f5ls9",
 ]
 
 command_template = "python -m swebench.harness.run_evaluation --predictions_path  patches/{model}.jsonl --max_workers 8 --run_id 7b-swebench-ablations --exclude_completed False"
@@ -37,10 +51,13 @@ results = {
 
 for path in Path("patches").glob("Blobheart*"):
     # dont run on non-sweep runs
-    if "sweep" not in path:
+    if "sweep" not in str(path):
         continue
 
     model_name = path.stem  # Gets filename without extension
+    if Path(f"{model_name}.7b-swebench-ablations.json").exists():
+        continue
+
     command = command_template.format(model=model_name)
     
     print(f"Processing {model_name}")
@@ -52,11 +69,16 @@ for path in Path("patches").glob("Blobheart*"):
     except subprocess.CalledProcessError as e:
         print(f"Error processing {model_name}: {e}")
 
+for path in Path("patches").glob("Blobheart*"):
+    # dont run on non-sweep runs
+    if "sweep" not in str(path):
+        continue
+
+    model_name = path.stem  # Gets filename without extension
     # Read and parse the JSON file
     wandb_id = model_name.split('sweep-')[1].split('-')[0]
     try:
-        #with open(f"{model_name}.7b-swebench-ablations.json", "r") as f:
-        with open(f"{model_name}.7b-swebench-scrape-16k.json", "r") as f:
+        with open(f"{model_name}.7b-swebench-ablations.json", "r") as f:
             data = json.load(f)
             resolved_instances = data['resolved_instances']
             

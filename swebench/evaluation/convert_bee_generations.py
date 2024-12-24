@@ -121,12 +121,19 @@ def extract_model_name(filepath: str) -> str:
         # Extract the matched group if any
         result = match.group(1) if match else "unknown"
         return result
-    elif 'Blobheart' in filepath:
-        pattern = r"(Blobheart.*)\.parquet"
-
+    elif "c3-sweep" in filepath:
+        # technically blobheart, for some reason modelname is different
+        # i think cuz of sweep?
+        pattern = r"(c3-sweep.*)\.parquet"
         # Search for the pattern in the original string
         match = re.search(pattern, filepath)
-
+        # Extract the matched group if any
+        result = match.group(1) if match else "unknown"
+        return "Blobheart:" + result
+    elif 'Blobheart' in filepath:
+        pattern = r"(Blobheart.*)\.parquet"
+        # Search for the pattern in the original string
+        match = re.search(pattern, filepath)
         # Extract the matched group if any
         result = match.group(1) if match else "unknown"
         return result
@@ -171,7 +178,7 @@ def process_row(row, model_name):
 def process_parquet_file(pq_path: str, output_dir: Path):
     """Process a single parquet file and save results as JSONL."""
     print(f"Processing {pq_path}")
-    model_name = extract_model_name(pq_path)
+    model_name = extract_model_name(str(pq_path))
     output_path = output_dir / f"{model_name}.jsonl"
     
     df = pd.read_parquet(pq_path)
@@ -218,6 +225,9 @@ if __name__ == "__main__":
         f"gs://{f}" for f in fs.ls(bucket_path)
         if f.endswith('.parquet') and "Blobheart" in f
     ]
+
+    swebench_generations_path = Path("/home/justinchiu_cohere_com/sweep_jobs_v3/swebench_lite_generations")
+    parquet_files = [f for f in swebench_generations_path.iterdir() if f.is_file()]
 
     # Create output directory
     output_dir = Path("patches")
