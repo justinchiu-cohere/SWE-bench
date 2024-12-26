@@ -46,6 +46,7 @@ results = {
     'baseline': [],
     'swebench': [],
     'swebench_scrape': [],
+    'swebench_half': [],
     'unknown': []
 }
 
@@ -89,6 +90,8 @@ for path in Path("patches").glob("Blobheart*"):
                 results['swebench'].append(resolved_instances)
             elif wandb_id in swebench_scrape_wandb_runs:
                 results['swebench_scrape'].append(resolved_instances)
+            elif wandb_id in swebench_half_wandb_runs:
+                results['swebench_half'].append(resolved_instances)
             else:
                 results['unknown'].append(resolved_instances)
                 print(f"Unknown wandb_id: {wandb_id}")
