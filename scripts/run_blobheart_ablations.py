@@ -43,6 +43,22 @@ swebench_datacurve_wandb_runs = [
     "jezb8c0r",
     "d3109o6t",
 ]
+swebench_half_scrape_wandb_runs = [
+    "pcsgjc9e",
+    "883rmmn4",
+    "u9tcjdyn",
+    "so7dodcd",
+    "pn3luepy",
+]
+swebench_half_datacurve_wandb_runs = [
+    "l94bjjzg",
+    "hs3hkqch",
+    "dy2zta3n",
+    "eghidk4c",
+    "febhnxn0",
+]
+
+
 
 command_template = "python -m swebench.harness.run_evaluation --predictions_path  patches/{model}.jsonl --max_workers 8 --run_id 7b-swebench-ablations --exclude_completed False"
 
@@ -52,7 +68,9 @@ results = {
     'swebench': [],
     'swebench_scrape': [],
     'swebench_half': [],
-    'swebench_datacurve': []
+    'swebench_datacurve': [],
+    'swebench_half_scrape': [],
+    'swebench_half_datacurve': [],
 }
 
 for path in Path("patches").glob("Blobheart*"):
@@ -99,6 +117,10 @@ for path in Path("patches").glob("Blobheart*"):
                 results['swebench_half'].append(resolved_instances)
             elif wandb_id in swebench_datacurve_wandb_runs:
                 results['swebench_datacurve'].append(resolved_instances)
+            elif wandb_id in swebench_half_scrape_wandb_runs:
+                results['swebench_half_scrape'].append(resolved_instances)
+            elif wandb_id in swebench_half_datacurve_wandb_runs:
+                results['swebench_half_datacurve'].append(resolved_instances)
             else:
                 results['unknown'].append(resolved_instances)
                 print(f"Unknown wandb_id: {wandb_id}")

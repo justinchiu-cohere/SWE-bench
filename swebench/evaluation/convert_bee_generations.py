@@ -111,6 +111,8 @@ def apply_diff_and_get_patch(repo, base_commit, instance_id, diff, repo_cache_pa
 
 def extract_model_name(filepath: str) -> str:
     """Extract model name from GCS filepath."""
+    return Path(filepath).stem
+
     if 'SftC37b' in filepath:
         # Define the regex pattern to match everything after 'SftC3' but before '.parquet'
         pattern = r"(SftC3.*)\.parquet"
