@@ -190,7 +190,9 @@ def process_parquet_file(pq_path: str, output_dir: Path):
     batch_size = 16
     for i in range(0, len(df), batch_size):
         batch = df.iloc[i:i+batch_size]
+        # DBG
         with ThreadPoolExecutor(max_workers=16) as executor:
+        #with ThreadPoolExecutor(max_workers=1) as executor:
             # Submit batch of rows and collect in order
             futures = [
                 executor.submit(process_row, row, model_name)
@@ -229,7 +231,10 @@ if __name__ == "__main__":
     ]
 
     swebench_generations_path = Path("/home/justinchiu_cohere_com/sweep_jobs_v3/swebench_lite_generations")
-    parquet_files = [f for f in swebench_generations_path.iterdir() if f.is_file()]
+    parquet_files = [
+        f for f in swebench_generations_path.iterdir()
+        if f.is_file() #and "4o" in str(f)
+    ]
 
     # Create output directory
     output_dir = Path("patches")
