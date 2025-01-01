@@ -35,7 +35,7 @@ for path in Path("patches").glob("swebench-verified-*"):
     model_name = path.stem  # Gets filename without extension
     # Read and parse the JSON file
     try:
-        with open(f"{model_name}.7b-swebench-ablations.json", "r") as f:
+        with open(f"{model_name}.swebench-verified-ablations.json", "r") as f:
             data = json.load(f)
             resolved_instances = data['resolved_instances']
             
