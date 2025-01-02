@@ -233,7 +233,11 @@ if __name__ == "__main__":
     swebench_generations_path = Path("/home/justinchiu_cohere_com/sweep_jobs_v3/swebench_lite_generations")
     parquet_files = [
         f for f in swebench_generations_path.iterdir()
-        if f.is_file() #and "4o" in str(f)
+        if (
+            f.is_file()
+            #and "4o" in str(f)
+            and "verified" in str(f)
+        )
     ]
 
     # Create output directory
