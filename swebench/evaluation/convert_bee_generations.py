@@ -238,7 +238,7 @@ if __name__ == "__main__":
         f for f in swebench_generations_path.iterdir()
         if (
             f.is_file()
-            #and "4o" in str(f)
+            and "4o" in str(f)
             and "verified" in str(f)
         )
     ]
