@@ -62,7 +62,7 @@ for path in Path("patches").glob("swebench-verified-*"):
     if Path(f"{model_name}.swebench-verified-ablations.json").exists():
         print(model_name, "exists")
         continue
-    if "4o" not in model_name: continue
+    #if "4o" not in model_name: continue
 
     command = command_template.format(model=model_name)
     
