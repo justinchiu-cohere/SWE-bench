@@ -182,6 +182,9 @@ def process_parquet_file(pq_path: str, output_dir: Path):
     print(f"Processing {pq_path}")
     model_name = extract_model_name(str(pq_path))
     output_path = output_dir / f"{model_name}.jsonl"
+    if output_path.exists():
+        print(output_path, "exists, continuing")
+        return
     
     df = pd.read_parquet(pq_path)
     results = []

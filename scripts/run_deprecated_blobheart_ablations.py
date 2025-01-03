@@ -11,18 +11,51 @@ baseline_wandb_runs = [
     "5pqaxf1r",
 ]
 swebench_wandb_runs = [
+    "tp0w9f2d",
+    "ofrxv6ke",
+    "4yku4e2z",
+    "4jtt1k9l",
+    "4lbw861n",
+    "zkey7k3u",
+    "1tb0s94i",
+    "gfh0o04h",
+    "zf7cubyt",
+    "8bk66u7l",
 ]
 swebench_scrape_wandb_runs = [
+    "1meyqtnm",
+    "mwbbqv5c",
+    "wsigy7al",
+    "qlgqof20",
+    "bowyk271",
 ]
 swebench_half_wandb_runs = [
-]
-swebench_sixty_wandb_runs = [
+    "dkg32sen",
+    "p4qou408",
+    "g7m1aajx",
+    "h5d8l7kw",
+    "8o5f5ls9",
 ]
 swebench_datacurve_wandb_runs = [
+    "auyqf4ak",
+    "18u29baj",
+    "8k0o3hw2",
+    "jezb8c0r",
+    "d3109o6t",
 ]
 swebench_half_scrape_wandb_runs = [
+    "pcsgjc9e",
+    "883rmmn4",
+    "u9tcjdyn",
+    "so7dodcd",
+    "pn3luepy",
 ]
 swebench_half_datacurve_wandb_runs = [
+    "l94bjjzg",
+    "hs3hkqch",
+    "dy2zta3n",
+    "eghidk4c",
+    "febhnxn0",
 ]
 
 

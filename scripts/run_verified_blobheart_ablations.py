@@ -21,9 +21,22 @@ swebench_half_runs = [
     "pj4n7clf",
 ]
 
+swebench_sixty_runs = [
+    "11wsdi8b",
+    "gwr7pdh4",
+    "3csh0vmd",
+    "jhd0snee",
+    "b1qzt0w7",
+]
+
+swebench_half_datacurve_runs = [
+]
+
 datamixes = dict(
     swebench=swebench_runs,
     swebench_half=swebench_half_runs,
+    swebench_sixty=swebench_sixty_runs,
+    swebench_half_datacurve=swebench_half_datacurve_runs,
 )
 
 
@@ -34,6 +47,9 @@ results = {
     '4o': [],
     'mistral': [],
     'swebench': [],
+    "swebench_half": [],
+    "swebench_sixty": [],
+    "swebench_half_datacurve": [],
 }
 
 for path in Path("patches").glob("swebench-verified-*"):
@@ -69,10 +85,10 @@ for path in Path("patches").glob("swebench-verified-*"):
             elif "c3-sweep" in model_name:
                 # names look like: "swebench-verified-c3-sweep-jqzlqtiq-xuse-fp16-32-10.parquet"
                 # 1. get the wandb
-                wandb_id = re.search(r"c3-sweep-(.*?)-", x).group(1)
+                wandb_id = re.search(r"c3-sweep-(.*?)-", model_name).group(1)
                 # 2. find the datamix corresponding to the wandb id
                 for datamix, ids in datamixes.items():
-                    if wandb in ids:
+                    if wandb_id in ids:
                         results[datamix].append(resolved_instances)
     except Exception as e:
         print(f"Error processing {model_name}: {e}")
