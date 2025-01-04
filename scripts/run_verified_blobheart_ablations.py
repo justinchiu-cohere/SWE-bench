@@ -37,11 +37,20 @@ swebench_half_datacurve_runs = [
     "jfj1g27t",
 ]
 
+swebench_scrape_runs = [
+    "tybz6c55",
+    "pqqs7gee",
+    "5lufoiok",
+    "42053q9t",
+    "gujhtoot",
+]
+
 datamixes = dict(
     swebench=swebench_runs,
     swebench_half=swebench_half_runs,
     swebench_sixty=swebench_sixty_runs,
     swebench_half_datacurve=swebench_half_datacurve_runs,
+    swebench_scrape=swebench_scrape_runs,
 )
 
 
@@ -58,6 +67,7 @@ results = {
 }
 
 for path in Path("patches").glob("swebench-verified-*"):
+    continue
     model_name = path.stem  # Gets filename without extension
     if Path(f"{model_name}.swebench-verified-ablations.json").exists():
         print(model_name, "exists")
