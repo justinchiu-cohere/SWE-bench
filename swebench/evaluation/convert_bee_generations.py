@@ -233,12 +233,13 @@ if __name__ == "__main__":
         if f.endswith('.parquet') and "Blobheart" in f
     ]
 
-    swebench_generations_path = Path("/home/justinchiu_cohere_com/sweep_jobs_v3/swebench_lite_generations")
+    #swebench_generations_path = Path("/home/justinchiu_cohere_com/sweep_jobs_v3/swebench_lite_generations")
+    swebench_generations_path = Path("/home/justinchiu_cohere_com/sweep_jobs_v3/swebench_verified_generations")
     parquet_files = [
         f for f in swebench_generations_path.iterdir()
         if (
             f.is_file()
-            and "4o" in str(f)
+            #and "4o" in str(f)
             and "verified" in str(f)
         )
     ]
@@ -246,7 +247,13 @@ if __name__ == "__main__":
     # Create output directory
     output_dir = Path("patches")
     output_dir.mkdir(exist_ok=True)
+
     
     # Process each parquet file
     for pq_path in parquet_files:
-        process_parquet_file(pq_path, output_dir)
+        if (output_dir / pq_path.with_suffix(".jsonl")).exists():
+            continue
+        try:
+            process_parquet_file(pq_path, output_dir)
+        except:
+            print("FAILURE: could not process", pq_path)

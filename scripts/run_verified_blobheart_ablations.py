@@ -29,6 +29,14 @@ swebench_sixty_runs = [
     "b1qzt0w7",
 ]
 
+swebench_half_scrape_runs = [
+    "gnn0i8o3",
+    "gkk5284i",
+    "kdra8bxn",
+    "t6v2bccr",
+    "zw14n3gx",
+]
+
 swebench_half_datacurve_runs = [
     "juc1q36g",
     "wsle0532",
@@ -43,6 +51,14 @@ swebench_scrape_runs = [
     "5lufoiok",
     "42053q9t",
     "gujhtoot",
+]
+
+swebench_datacurve_runs = [
+    "8rjexkdj",
+    "e2luccwf",
+    "tuc5ej91",
+    "crtifnwf",
+    "ujgnow85",
 ]
 
 datamixes = dict(
@@ -63,7 +79,10 @@ results = {
     'swebench': [],
     "swebench_half": [],
     "swebench_sixty": [],
+    "swebench_half_scrape": [],
     "swebench_half_datacurve": [],
+    "swebench_scrape": [],
+    "swebench_datacurve": [],
 }
 
 for path in Path("patches").glob("swebench-verified-*"):
