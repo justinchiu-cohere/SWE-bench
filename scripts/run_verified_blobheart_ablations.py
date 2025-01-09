@@ -30,11 +30,11 @@ swebench_sixty_runs = [
 ]
 
 swebench_half_scrape_runs = [
-    "gnn0i8o3",
-    "gkk5284i",
-    "kdra8bxn",
-    "t6v2bccr",
-    "zw14n3gx",
+    "9o6gy25k",
+    "ze026y1q",
+    "s36u41pp",
+    "6rfkf6qv",
+    "kitjyddf",
 ]
 
 swebench_half_datacurve_runs = [
@@ -46,19 +46,19 @@ swebench_half_datacurve_runs = [
 ]
 
 swebench_scrape_runs = [
-    "tybz6c55",
-    "pqqs7gee",
-    "5lufoiok",
-    "42053q9t",
-    "gujhtoot",
+    "l0gis24e",
+    "peqb32w5",
+    "ngz4fqu9",
+    "cgc7zx3e",
+    "o7mo7rk1",
 ]
 
 swebench_datacurve_runs = [
-    "8rjexkdj",
-    "e2luccwf",
-    "tuc5ej91",
-    "crtifnwf",
-    "ujgnow85",
+    "y55iib7y",
+    "rtpp1ooe",
+    "9qj9tmic",
+    "65de9xas",
+    "o67llyrr",
 ]
 
 datamixes = dict(
@@ -66,11 +66,13 @@ datamixes = dict(
     swebench_half=swebench_half_runs,
     swebench_sixty=swebench_sixty_runs,
     swebench_half_datacurve=swebench_half_datacurve_runs,
+    swebench_half_scrape=swebench_half_scrape_runs,
     swebench_scrape=swebench_scrape_runs,
+    swebench_datacurve=swebench_datacurve_runs,
 )
 
 
-command_template = "python -m swebench.harness.run_evaluation --dataset_name princeton-nlp/SWE-bench_Verified --predictions_path  patches/{model}.jsonl --max_workers 8 --run_id swebench-verified-ablations --exclude_completed False"
+command_template = "python -m swebench.harness.run_evaluation --dataset_name princeton-nlp/SWE-bench_Verified --predictions_path  patches/{model}.jsonl --max_workers 128 --run_id swebench-verified-ablations --exclude_completed False"
 
 # Dictionary to store results
 results = {

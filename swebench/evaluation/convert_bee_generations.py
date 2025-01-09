@@ -184,13 +184,13 @@ def process_parquet_file(pq_path: str, output_dir: Path):
     output_path = output_dir / f"{model_name}.jsonl"
     if output_path.exists():
         print(output_path, "exists, continuing")
-        return
+        #return
     
     df = pd.read_parquet(pq_path)
+
     results = []
-    
     # Process in batches of 16
-    batch_size = 16
+    batch_size = 128
     for i in range(0, len(df), batch_size):
         batch = df.iloc[i:i+batch_size]
         # DBG
@@ -205,7 +205,15 @@ def process_parquet_file(pq_path: str, output_dir: Path):
                 result = future.result()
                 if result:
                     results.append(result)
-    
+
+    # de-duplicate
+    deduplicated_dict = {}
+    for d in results:
+        deduplicated_dict[d["instance_id"]] = d
+
+    # Extract the values from the dictionary back into a list
+    results = list(deduplicated_dict.values())
+
     # Write results to JSONL
     with output_path.open('w') as f:
         for result in results:
@@ -241,6 +249,7 @@ if __name__ == "__main__":
             f.is_file()
             #and "4o" in str(f)
             and "verified" in str(f)
+            and "c3-sweep-6mv5zues-gybf-ckpt-last-fp16" in str(f)
         )
     ]
 
@@ -248,12 +257,9 @@ if __name__ == "__main__":
     output_dir = Path("patches")
     output_dir.mkdir(exist_ok=True)
 
-    
     # Process each parquet file
     for pq_path in parquet_files:
         if (output_dir / pq_path.with_suffix(".jsonl")).exists():
-            continue
-        try:
-            process_parquet_file(pq_path, output_dir)
-        except:
-            print("FAILURE: could not process", pq_path)
+            #continue
+            pass
+        process_parquet_file(pq_path, output_dir)
