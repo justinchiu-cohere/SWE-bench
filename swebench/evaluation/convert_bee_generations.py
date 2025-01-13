@@ -250,7 +250,8 @@ if __name__ == "__main__":
             #and "4o" in str(f)
             and "verified" in str(f)
             #and ("mistral" in str(f) or "claude" in str(f))
-            and "llama" in str(f)
+            #and "llama" in str(f)
+            and "command3-111b-d7ajyi7h-h4pc-synth" in str(f)
         )
     ]
 

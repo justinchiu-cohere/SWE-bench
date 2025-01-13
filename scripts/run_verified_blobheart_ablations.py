@@ -65,6 +65,10 @@ swebench_111b_runs = [
     "6mv5zues",
 ]
 
+swebench_cot_runs = [
+    "command3-111b-d7ajyi7h-h4pc-synth",
+]
+
 datamixes = dict(
     swebench=swebench_runs,
     swebench_half=swebench_half_runs,
@@ -94,6 +98,7 @@ results = {
     "swebench_scrape": [],
     "swebench_datacurve": [],
     "swebench_111b": [],
+    "swebench_cot": [],
 }
 
 for path in Path("patches").glob("swebench-verified-*"):
@@ -134,6 +139,8 @@ for path in Path("patches").glob("swebench-verified-*"):
                 results["qwen"].append(resolved_instances)
             elif "llama" in model_name:
                 results["llama"].append(resolved_instances)
+            elif "command3-111b-d7ajyi7h-h4pc-synth" in model_name:
+                results["swebench_cot"].append(resolved_instances)
             elif "c3-sweep" in model_name:
                 # names look like: "swebench-verified-c3-sweep-jqzlqtiq-xuse-fp16-32-10.parquet"
                 # 1. get the wandb
