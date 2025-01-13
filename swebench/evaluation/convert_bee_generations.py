@@ -249,7 +249,8 @@ if __name__ == "__main__":
             f.is_file()
             #and "4o" in str(f)
             and "verified" in str(f)
-            and "c3-sweep-6mv5zues-gybf-ckpt-last-fp16" in str(f)
+            #and ("mistral" in str(f) or "claude" in str(f))
+            and "llama" in str(f)
         )
     ]
 

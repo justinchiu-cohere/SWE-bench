@@ -61,6 +61,10 @@ swebench_datacurve_runs = [
     "o67llyrr",
 ]
 
+swebench_111b_runs = [
+    "6mv5zues",
+]
+
 datamixes = dict(
     swebench=swebench_runs,
     swebench_half=swebench_half_runs,
@@ -69,6 +73,7 @@ datamixes = dict(
     swebench_half_scrape=swebench_half_scrape_runs,
     swebench_scrape=swebench_scrape_runs,
     swebench_datacurve=swebench_datacurve_runs,
+    swebench_111b=swebench_111b_runs,
 )
 
 
@@ -77,7 +82,10 @@ command_template = "python -m swebench.harness.run_evaluation --dataset_name pri
 # Dictionary to store results
 results = {
     '4o': [],
+    "claude": [],
     'mistral': [],
+    "qwen": [],
+    "llama": [],
     'swebench': [],
     "swebench_half": [],
     "swebench_sixty": [],
@@ -85,10 +93,11 @@ results = {
     "swebench_half_datacurve": [],
     "swebench_scrape": [],
     "swebench_datacurve": [],
+    "swebench_111b": [],
 }
 
 for path in Path("patches").glob("swebench-verified-*"):
-    continue
+    #continue
     model_name = path.stem  # Gets filename without extension
     if Path(f"{model_name}.swebench-verified-ablations.json").exists():
         print(model_name, "exists")
@@ -117,8 +126,14 @@ for path in Path("patches").glob("swebench-verified-*"):
             # Categorize based on wandb_id
             if "mistral" in model_name:
                 results["mistral"].append(resolved_instances)
+            elif "claude" in model_name:
+                results["claude"].append(resolved_instances)
             elif "4o" in model_name:
                 results["4o"].append(resolved_instances)
+            elif "Qwen" in model_name:
+                results["qwen"].append(resolved_instances)
+            elif "llama" in model_name:
+                results["llama"].append(resolved_instances)
             elif "c3-sweep" in model_name:
                 # names look like: "swebench-verified-c3-sweep-jqzlqtiq-xuse-fp16-32-10.parquet"
                 # 1. get the wandb
