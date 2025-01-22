@@ -66,7 +66,8 @@ swebench_111b_runs = [
 ]
 
 swebench_cot_runs = [
-    "command3-111b-d7ajyi7h-h4pc-synth",
+    #"command3-111b-d7ajyi7h-h4pc-synth",
+    "contemplate-reas-low-lr-01-09",
 ]
 
 datamixes = dict(

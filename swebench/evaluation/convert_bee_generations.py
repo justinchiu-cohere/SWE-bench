@@ -251,7 +251,9 @@ if __name__ == "__main__":
             and "verified" in str(f)
             #and ("mistral" in str(f) or "claude" in str(f))
             #and "llama" in str(f)
-            and "command3-111b-d7ajyi7h-h4pc-synth" in str(f)
+            #and "command3-111b-d7ajyi7h-h4pc-synth" in str(f)
+            #and "contemplate-reas-low-lr-01-09" in str(f)
+            and "swebench-verified-c3-sweep-r7drg1ty-x2ux-fp16-32-10.parquet" in str(f)
         )
     ]
 
