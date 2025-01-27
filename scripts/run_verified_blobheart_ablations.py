@@ -91,7 +91,7 @@ datamixes = dict(
 )
 
 
-command_template = "python -m swebench.harness.run_evaluation --dataset_name princeton-nlp/SWE-bench_Verified --predictions_path  patches/{model}.jsonl --max_workers 16 --run_id swebench-verified-ablations --exclude_completed False"
+command_template = "python -m swebench.harness.run_evaluation --dataset_name princeton-nlp/SWE-bench_Verified --predictions_path  patches/{model}.jsonl --max_workers 32 --run_id swebench-verified-ablations --exclude_completed False"
 
 # Dictionary to store results
 results = {
