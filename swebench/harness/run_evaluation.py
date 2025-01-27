@@ -259,7 +259,9 @@ def run_instances(
         run_id (str): Run ID
         timeout (int): Timeout for running tests
     """
-    client = docker.from_env()
+    # set the docker client timeout to the test running timeout.
+    # this mean that build could take the full timeout allotment...but thats fine.
+    client = docker.from_env(timeout=timeout, max_pool_size=max_workers)
     test_specs = list(map(make_test_spec, instances))
 
     # print number of existing instance images
