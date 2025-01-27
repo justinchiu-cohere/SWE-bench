@@ -61,8 +61,16 @@ swebench_datacurve_runs = [
     "o67llyrr",
 ]
 
-swebench_111b_runs = [
+swebench_111b_baseline_runs = [
     "6mv5zues",
+]
+
+swebench_111b_runs = [
+    #"6mv5zues",
+    #"r7drg1ty",
+    "dpu57nh9",
+    "hbkga5m0",
+    "2p5wmjil",
 ]
 
 swebench_cot_runs = [
@@ -79,6 +87,7 @@ datamixes = dict(
     swebench_scrape=swebench_scrape_runs,
     swebench_datacurve=swebench_datacurve_runs,
     swebench_111b=swebench_111b_runs,
+    swebench_111b_baseline=swebench_111b_baseline_runs,
 )
 
 
@@ -99,6 +108,7 @@ results = {
     "swebench_scrape": [],
     "swebench_datacurve": [],
     "swebench_111b": [],
+    "swebench_111b_baseline": [],
     "swebench_cot": [],
 }
 
@@ -117,6 +127,9 @@ for path in Path("patches").glob("swebench-verified-*"):
     
     # Execute the command
     try:
+        # prune all previous containers
+        subprocess.run("docker container prune -f", shell=True)
+        # then run command
         subprocess.run(command, shell=True, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error processing {model_name}: {e}")

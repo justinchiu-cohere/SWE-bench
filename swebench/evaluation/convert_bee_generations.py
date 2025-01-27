@@ -253,7 +253,14 @@ if __name__ == "__main__":
             #and "llama" in str(f)
             #and "command3-111b-d7ajyi7h-h4pc-synth" in str(f)
             #and "contemplate-reas-low-lr-01-09" in str(f)
-            and "swebench-verified-c3-sweep-r7drg1ty-x2ux-fp16-32-10.parquet" in str(f)
+            # 5e-5 sweep with .3 ata
+            #and "swebench-verified-c3-sweep-r7drg1ty-x2ux-fp16-32-10.parquet" in str(f)
+            and (
+                # 111b full data ablations
+                "dpu57nh9" in str(f)
+                or "hbkga5m0" in str(f)
+                or "2p5wmjil" in str(f)
+            )
         )
     ]
 
