@@ -143,17 +143,7 @@ for path in Path("patches").glob("swebench-verified-*"):
             resolved_instances = data['resolved_instances']
             
             # Categorize based on wandb_id
-            if "mistral" in model_name:
-                results["mistral"].append(resolved_instances)
-            elif "claude" in model_name:
-                results["claude"].append(resolved_instances)
-            elif "4o" in model_name:
-                results["4o"].append(resolved_instances)
-            elif "Qwen" in model_name:
-                results["qwen"].append(resolved_instances)
-            elif "llama" in model_name:
-                results["llama"].append(resolved_instances)
-            elif "command3-111b-d7ajyi7h-h4pc-synth" in model_name:
+            if "command3-111b-d7ajyi7h-h4pc-synth" in model_name:
                 results["swebench_cot"].append(resolved_instances)
             elif "c3-sweep" in model_name:
                 # names look like: "swebench-verified-c3-sweep-jqzlqtiq-xuse-fp16-32-10.parquet"
@@ -163,6 +153,8 @@ for path in Path("patches").glob("swebench-verified-*"):
                 for datamix, ids in datamixes.items():
                     if wandb_id in ids:
                         results[datamix].append(resolved_instances)
+            else:
+                results[model_name] = [resolved_instances]
     except Exception as e:
         print(f"Error processing {model_name}: {e}")
 

@@ -255,12 +255,12 @@ if __name__ == "__main__":
             #and "contemplate-reas-low-lr-01-09" in str(f)
             # 5e-5 sweep with .3 ata
             #and "swebench-verified-c3-sweep-r7drg1ty-x2ux-fp16-32-10.parquet" in str(f)
-            and (
+            #and (
                 # 111b full data ablations
-                "dpu57nh9" in str(f)
-                or "hbkga5m0" in str(f)
-                or "2p5wmjil" in str(f)
-            )
+                #"dpu57nh9" in str(f)
+                #or "hbkga5m0" in str(f)
+                #or "2p5wmjil" in str(f)
+            #)
         )
     ]
 
