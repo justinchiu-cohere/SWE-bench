@@ -115,6 +115,8 @@ results = {
 for path in Path("patches").glob("swebench-verified-*"):
     #continue
     model_name = path.stem  # Gets filename without extension
+    if "c3-sweep" in model_name and "c3-sweep-s1s7cdk9-3dhf-fp16" not in model_name:
+        continue
     if Path(f"{model_name}.swebench-verified-ablations.json").exists():
         print(model_name, "exists")
         continue
@@ -141,7 +143,9 @@ for path in Path("patches").glob("swebench-verified-*"):
         with open(f"{model_name}.swebench-verified-ablations.json", "r") as f:
             data = json.load(f)
             resolved_instances = data['resolved_instances']
-            
+
+            results[model_name] = [resolved_instances]
+            """
             # Categorize based on wandb_id
             if "command3-111b-d7ajyi7h-h4pc-synth" in model_name:
                 results["swebench_cot"].append(resolved_instances)
@@ -155,6 +159,7 @@ for path in Path("patches").glob("swebench-verified-*"):
                         results[datamix].append(resolved_instances)
             else:
                 results[model_name] = [resolved_instances]
+            """
     except Exception as e:
         print(f"Error processing {model_name}: {e}")
 

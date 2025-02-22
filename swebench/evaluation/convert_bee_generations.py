@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import json
 import re
 import os
@@ -194,7 +195,7 @@ def process_parquet_file(pq_path: str, output_dir: Path):
     for i in range(0, len(df), batch_size):
         batch = df.iloc[i:i+batch_size]
         # DBG
-        with ThreadPoolExecutor(max_workers=16) as executor:
+        with ThreadPoolExecutor(max_workers=64) as executor:
         #with ThreadPoolExecutor(max_workers=1) as executor:
             # Submit batch of rows and collect in order
             futures = [
@@ -249,6 +250,15 @@ if __name__ == "__main__":
             f.is_file()
             #and "4o" in str(f)
             and "verified" in str(f)
+            and (
+                "command-r-08-2024" in str(f)
+                or "command-r-plus-08-2024" in str(f)
+                or "command-r7b-12-2024" in str(f)
+                or "c3-sweep-s1s7cdk9-3dhf-fp16" in str(f)
+            )
+            #and "gemini" in str(f)
+            #and ("Qwen2.5-7B" in str(f) or "gemma" in str(f))
+            #and "c3-sweep" not in str(f)
             #and ("mistral" in str(f) or "claude" in str(f))
             #and "llama" in str(f)
             #and "command3-111b-d7ajyi7h-h4pc-synth" in str(f)
@@ -269,7 +279,7 @@ if __name__ == "__main__":
     output_dir.mkdir(exist_ok=True)
 
     # Process each parquet file
-    for pq_path in parquet_files:
+    for pq_path in tqdm(parquet_files):
         if (output_dir / pq_path.with_suffix(".jsonl")).exists():
             #continue
             pass
