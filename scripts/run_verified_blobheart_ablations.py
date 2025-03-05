@@ -115,7 +115,7 @@ results = {
 for path in Path("patches").glob("swebench-verified-*"):
     #continue
     model_name = path.stem  # Gets filename without extension
-    if "c3-sweep" in model_name and "c3-sweep-s1s7cdk9-3dhf-fp16" not in model_name:
+    if "c3-sweep" in model_name and "c3-111b-instruct-offline-pref-2j2jzkcf-c3-temp-fp16-vllm" not in model_name:
         continue
     if Path(f"{model_name}.swebench-verified-ablations.json").exists():
         print(model_name, "exists")
